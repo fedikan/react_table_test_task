@@ -1,0 +1,15 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+.loadchoser{
+  margin:0 auto;
+  margin-top:100px;
+  width:400px;
+  display:flex;
+  justify-content: space-between;
+}
+.hide_inputs{
+  height: 0px;
+  overflow: hidden;
+}
