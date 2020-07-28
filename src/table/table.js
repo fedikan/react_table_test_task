@@ -31,7 +31,7 @@ export default props => (
 
             <tbody>
                 {props.data.map((item) =>
-                    <tr onClick={props.showInfo.bind(null,item)} key={item.id+item.firstName+item.lastName}>
+                    <tr onClick={props.showInfo.bind(null,item)} key={Math.random()}>
                         <td >{item.id}</td>
                         <td>{item.firstName}</td>
                         <td>{item.lastName}</td>

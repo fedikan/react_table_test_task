@@ -11,7 +11,6 @@ const [fullInfo,setFullInfo]=useState({firstName:'',lastName:'',email:'',phone:'
 const nameHandler = event => {
     setName(event.target.value);
     setInfo()
-
 }
 const lastNameHandler = event => {
     setLastName(event.target.value);
@@ -29,9 +28,8 @@ const phoneHandler = event => {
 }
 
 const setInfo=()=>{
-    let id=Math.round(Math.random()*100);
     setFullInfo({
-        firstName,lastName,email,phone,id
+        firstName,lastName,email,phone
     })
 }
 return(

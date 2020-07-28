@@ -5,8 +5,8 @@ import Loader from './loader/loader.js'
 import Information from './info/information'
 import LoadChoser from './loadChoser/loadChoser'
 import AddField from './table/addField/addField'
-
 import ReactPaginate from 'react-paginate'
+
 import 'bootstrap/dist/css/bootstrap.css';
 import _ from 'lodash';
 
@@ -22,7 +22,7 @@ class App extends Component {
     currentPage: 0,
     search: '',
     addContact:false,
-    newItem:{}
+    newId:1001,
   }
   async loadData(src) {
     let response = await fetch(src)
@@ -58,7 +58,6 @@ class App extends Component {
 
   }
   onSearch = search => {
-    console.log(search);
     this.setState({ search, currentPage: 0 })
   }
 
@@ -80,17 +79,14 @@ class App extends Component {
       addContact:true
     });
   }
-  submitHandler=newItem=>{
-    this.setState({newItem});
-    let clonedData=this.state.data.concat();
-        clonedData.push(this.state.newItem);
-    let sortedData = _.orderBy(clonedData, this.state.sortItem, this.state.sortType);
-    this.setState({
-      data:sortedData,
-      addContact:false
+  submitHandler=item=>{ 
+   let newItem=_.cloneDeep(item);    
+    newItem.id=this.state.newId
+    this.setState(state => {
+      let newId=Math.round(Math.random()*100);
+      return {data: [...state.data, newItem],newId}
     })
-    console.log(this.state.data)
-  }
+}
 
 
   render() {
@@ -99,7 +95,6 @@ class App extends Component {
     const pageCount = Math.round(filteredData.length/ pageSize) 
 
     const displayedData = _.chunk(filteredData, pageSize)[this.state.currentPage];
-    // debugger
     return (
       <div className="App">
         <div className="container">
