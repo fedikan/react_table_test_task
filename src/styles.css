@@ -10,6 +10,5 @@
   justify-content: space-between;
 }
 .hide_inputs{
-  height: 0px;
-  overflow: hidden;
+  display: none;
 }

@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import "./styles.css";
-import Table from './table/table'
-import Loader from './loader/loader.js'
-import Information from './info/information'
-import LoadChoser from './loadChoser/loadChoser'
-import AddField from './table/addField/addField'
+import Table from './components/table/table'
+import Loader from './components/loader/loader'
+import Information from './components/info/information'
+import LoadChoser from './components/loadChoser/loadChoser'
 import ReactPaginate from 'react-paginate'
 
 import 'bootstrap/dist/css/bootstrap.css';
@@ -24,17 +23,17 @@ class App extends Component {
     addContact:false,
     newId:1001,
   }
-  async loadData(src) {
-    let response = await fetch(src)
-    let data = await response.json();
-    let sortedData = _.orderBy(data, this.state.sortItem, this.state.sortType);
-    this.setState({
-      isLoading: false,
-      data: sortedData,
-      isLoaded: true,
-    })
-  }
-
+   loadData = async src => {
+    const { sortItem, sortType } = this.state;
+     const response = await fetch(src);
+     const data = await response.json();
+     const  sortedData = _.orderBy(data, sortItem, sortType);
+     this.setState({
+       isLoading: false,
+       data: sortedData,
+       isLoaded: true,
+     })
+   }
 
   showInfo = item => {
     this.setState({ contactData: item })
@@ -49,9 +48,9 @@ class App extends Component {
       sortItem: sortItem,
     });
   }
-  setAmount = (src) => {
-    this.loadData(src);
+  setAmount = src => {
     this.setState({ isLoading: true });
+    this.loadData(src);
   }
   handlePageClick = ({ selected }) => {
     this.setState({ currentPage: selected })
@@ -63,27 +62,35 @@ class App extends Component {
 
   getFilteredData() {
     const { data, search } = this.state;
+    const loweredSearch=search.toLowerCase()
     if (!search) {
       return data;
     }
     return data.filter(item => {
-      return item['firstName'].toLowerCase().includes(search.toLowerCase())
-      || item['lastName'].toLowerCase().includes(search.toLowerCase())
-      || item['email'].toLowerCase().includes(search.toLowerCase())
+      return item['firstName'].toLowerCase().includes(loweredSearch)
+      || item['lastName'].toLowerCase().includes(loweredSearch)
+      || item['email'].toLowerCase().includes(loweredSearch)
       || item['phone'].includes(search)
     })
   }
 
   onAdd=()=>{
-    this.setState({
-      addContact:true
-    });
+    if (!this.state.addContact){
+      this.setState({
+        addContact:true
+      });
+    }else {
+      this.setState({
+        addContact:false
+      });
+    }
+   
   }
   submitHandler=item=>{ 
-   let newItem=_.cloneDeep(item);    
+   const newItem=_.cloneDeep(item);    
     newItem.id=this.state.newId
     this.setState(state => {
-      let newId=Math.round(Math.random()*100);
+      const newId=Math.round(Math.random()*100);
       return {data: [...state.data, newItem],newId}
     })
 }
@@ -93,15 +100,12 @@ class App extends Component {
     const pageSize = 50;
     const filteredData = this.getFilteredData()     
     const pageCount = Math.round(filteredData.length/ pageSize) 
-
     const displayedData = _.chunk(filteredData, pageSize)[this.state.currentPage];
     return (
       <div className="App">
         <div className="container">
           {
             this.state.isLoaded ?
-            <React.Fragment>
-              <AddField onAdd={this.onAdd} addContact={this.state.addContact} onSubmit={this.submitHandler}/>
 
               <Table data={displayedData}
                onSearch={this.onSearch}
@@ -109,8 +113,8 @@ class App extends Component {
                sortType={this.state.sortType}
                sort={this.onSort}
                showInfo={this.showInfo}
-               onAdd={this.onAdd} />
-              </React.Fragment>
+               onAdd={this.onAdd} addContact={this.state.addContact} onSubmit={this.submitHandler}
+              />
 
               :
               <LoadChoser setAmount={this.setAmount} />
@@ -152,7 +156,6 @@ class App extends Component {
               : null
           }
           {
-
             this.state.contactData.address ?
               <Information contact={this.state.contactData} />
               : null
